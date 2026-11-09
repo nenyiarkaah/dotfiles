@@ -63,6 +63,7 @@ if keybase_enabled
 end
 
 cask 'font-meslo-lg-nerd-font'
+cask 'font-meslo-for-powerline'  # the restored iTerm2 profile uses 'MesloLGLDZForPowerline'
 
 # formulae pulled in from homebrew to replace system equivalents to fix any security issues since the OS was released
 # This list is enhanced from https://macgnu.codewithshin.com/?id=gnu-programs-existing-in-macos-which-are-outdated
@@ -90,6 +91,7 @@ brew 'antidote',
 brew 'delta'
 brew 'direnv'
 brew 'eza'
+brew 'gh'  # git's GitHub credential helper (set in the personal git include) runs 'gh auth git-credential'
 brew 'git-extras',
   postinstall: "rm -rf \"${HOMEBREW_REPOSITORY}/share/zsh/site-functions/_git\" 2>/dev/null || true"
 brew 'git-tools'
@@ -106,53 +108,76 @@ cask 'iterm2@beta'
 # FIRST_INSTALL: While re-imaging the OS or setting up for the first time, install only the bare minimum apps/utilities above this line so that the rest of the backup restoration can proceed faster. (The install scripts cut this file at this exact line -- keep the '# FIRST_INSTALL:' prefix.)
 
 # formulae pulled in for advanced configs (these are optional, but still recommended)
+brew 'ast-grep'
 brew 'bat'
 brew 'btop'
+brew 'git-filter-repo'
 brew 'git-gui'
 brew 'git-sizer'
 brew 'jaq'
 brew 'mole'
 brew 'ncdu'
-brew 'nikgrbn/tap/finder-menu', trusted: true, postinstall: 'finder-menu enable'
 brew 'pandoc'
 brew 'prettyping'
 brew 'ripgrep'
 brew 'shfmt'
 brew 'syncthing'
 brew 'tlrc'
+brew 'yt-dlp'
 
-cask 'clocker', postinstall: "\"#{setup_login_items_script}\" -a 'Clocker'"
+cask '1password'
+cask '1password-cli'
+cask 'adobe-acrobat-pro'
+cask 'alfred'
+cask 'brave-browser'
+cask 'bruno'
+cask 'claude-code'
+cask 'datagrip'
 cask 'dbeaver-community'
 cask 'drawio'
-cask 'firefox@nightly' # , greedy: true
-cask 'google-chrome@beta'
-cask 'keepassxc'
-cask 'keycastr'  # , postinstall: "\"#{setup_login_items_script}\" -a 'Keycastr'"
+cask 'firefox'
+cask 'github'
+cask 'iina'
+cask 'intellij-idea'
 cask 'keyclu', postinstall: "\"#{setup_login_items_script}\" -a 'KeyClu'" if is_arm
-cask 'okta-verify', postinstall: "\"#{setup_login_items_script}\" -a 'Okta Verify 2'"
+cask 'kid3'
+cask 'microsoft-excel'
+cask 'microsoft-onenote'
+cask 'microsoft-outlook'
+cask 'microsoft-powerpoint'
+cask 'microsoft-word'
+cask 'notion-calendar'
+cask 'obsidian'
+cask 'onedrive'
 # cask 'onlyoffice'
-cask 'protonvpn' # , postinstall: "\"#{setup_login_items_script}\" -a 'ProtonVPN'"
 cask 'qlmarkdown'
-cask 'rancher' # if ::OS::Mac::version < 26
+cask 'rancher'
 cask 'shortcat', postinstall: "\"#{setup_login_items_script}\" -a 'Shortcat'"
+cask 'signal'
+cask 'slack'
 cask 'thaw', postinstall: "\"#{setup_login_items_script}\" -a 'Thaw'" if ::OS::Mac::version >= 14 && ::OS::Mac::version < 27
-cask 'vorssaint/tap/vorssaint', trusted: true, postinstall: "\"#{setup_login_items_script}\" -a 'Vorssaint'"
-cask 'vraravam/tap/mechvibes', trusted: true, postinstall: "\"#{setup_login_items_script}\" -a 'Mechvibes'"
-cask 'vraravam/tap/wobbly', trusted: true, postinstall: "\"#{setup_login_items_script}\" -a 'Wobbly'"
-cask 'vscodium@insiders',
-  postinstall: "ln -sf '/Applications/VSCodium - Insiders.app/Contents/Resources/app/bin/codium-insiders' \"${HOMEBREW_PREFIX}/bin/codium-insiders\" && " \
-               "ln -sf \"${HOMEBREW_PREFIX}/bin/codium-insiders\" \"${HOMEBREW_PREFIX}/bin/codium\" && " \
-               "ln -sf \"${HOMEBREW_PREFIX}/bin/codium\" \"${HOMEBREW_PREFIX}/bin/code\""
+cask 'visual-studio-code'
+cask 'vlc'
+cask 'waterfox'
+cask 'whatsapp'
 # cask 'xykong/tap/flux-markdown', trusted: true, postinstall: 'qlmanage -r'
 # cask 'zed@preview',
 #   postinstall: "ln -sf '/Applications/Zed Preview.app/Contents/MacOS/cli' \"${HOMEBREW_PREFIX}/bin/zed\""
-cask 'zen@twilight'
 cask 'zoom'
 
-# Trial to replace onlyoffice suite
-cask 'gridcraft'
-cask 'pdfcraft'
-cask 'wordcraft'
+# work tools
+# msodbcsql18 otherwise prompts for its licence on stdin, which fails in the background
+# full install on a vanilla OS -- setting this accepts Microsoft's ODBC driver EULA.
+ENV['HOMEBREW_ACCEPT_EULA'] = 'Y'
+brew 'ansible'
+brew 'microsoft/mssql-release/msodbcsql18', trusted: true
+brew 'sonar-scanner'
+brew 'sshpass'
+
+# speech-to-text and OCR
+brew 'poppler'
+brew 'tesseract'
+brew 'whisper.cpp'
 
 # local AI coding tools
 # tap 'jundot/omlx', 'git@github.com/jundot/omlx'
@@ -162,50 +187,54 @@ brew 'ollama', link: true, restart_service: :changed
 # brew 'jundot/omlx/omlx', trusted: true, restart_service: :changed if is_arm
 brew 'anomalyco/tap/opencode-v2', trusted: true
 
-# brew 'mas'
+# Mac App Store apps: 'mas' only installs apps the Apple Account signed in to the App Store has
+# already obtained, so sign in there before the full install runs (it cannot sign in for you).
+brew 'mas'
+# App Store IDs are opaque identifiers, not quantities: kept digit-for-digit as the App Store
+# shows them (searchable, copy-pasteable) rather than split with '_' thousands separators.
+# rubocop:disable Style/NumericLiterals
+mas 'Keynote', id: 361285480
+mas 'Numbers', id: 361304891
+mas 'Pages', id: 361309726
+mas 'WireGuard', id: 1451685025
 # mas 'PDFgear', id: 6469021132
+# rubocop:enable Style/NumericLiterals
 
 # VSCode extensions
-# Guarded on 'code' being in PATH (symlinked from the vscodium@insiders postinstall
-# hook above) so brew does not silently install VS Code itself when 'code' is absent.
-#
-# Marketplace redirect set directly here (mirrors the '.aliases' block guarded on
-# 'codium' being in PATH) rather than relying solely on that shell env: on a vanilla-OS
-# fresh install, the full Brewfile (this cask + these extensions) runs as a detached
-# background job forked before '.aliases' is ever re-sourced with 'codium' now present,
-# so that shell-level redirect would never be active for 'vscode' extension installs
-# triggered from this file. Setting it here guarantees it applies to every 'brew bundle'
-# invocation that reaches this point, regardless of which shell/background context
-# invoked it.
-ENV['VSCODE_GALLERY_SERVICE_URL'] = 'https://marketplace.visualstudio.com/_apis/public/gallery'
-ENV['VSCODE_GALLERY_CACHE_URL'] = 'https://vscode.blob.core.windows.net/gallery/index'
-ENV['VSCODE_GALLERY_ITEM_URL'] = 'https://marketplace.visualstudio.com/items'
-ENV['VSCODE_GALLERY_CONTROL_URL'] = ''
-ENV['VSCODE_GALLERY_RECOMMENDATIONS_URL'] = ''
+# Guarded on 'code' being in PATH (provided by the visual-studio-code cask above) because
+# the Brewfile is evaluated before any cask is installed: on a vanilla-OS fresh install
+# 'code' is absent during the first 'brew bundle', so these extensions are installed by the
+# next run (e.g. the software-updates cron job) instead of failing.
 is_vscode_installed = !`PATH="/opt/homebrew/bin:/usr/local/bin:${PATH}" which code`.chomp.empty?  # explicitly set PATH since the shell being opened doesn't run the login configs
 if is_vscode_installed
+  vscode 'anthropic.claude-code'
   vscode 'britesnow.vscode-toggle-quotes'
   vscode 'codezombiech.gitignore'
-  vscode 'continue.continue'
   vscode 'davidanson.vscode-markdownlint'
   vscode 'dbaeumer.vscode-eslint'
-  vscode 'digitalbrainstem.javascript-ejs-support'
-  vscode 'drcika.apc-extension'
+  vscode 'donjayamanne.githistory'
+  vscode 'eamodio.gitlens'
   vscode 'editorconfig.editorconfig'
   vscode 'esbenp.prettier-vscode'
-  vscode 'genuitecllc.codetogether'
   vscode 'github.vscode-github-actions'
-  vscode 'google.geminicodeassist'
+  vscode 'golang.go'
   vscode 'ibm.output-colorizer'
   vscode 'mechatroner.rainbow-csv'
+  vscode 'mhutchie.git-graph'
   vscode 'mikestead.dotenv'
   vscode 'mkhl.direnv'
+  vscode 'mohsen1.prettify-json'
   vscode 'ms-azuretools.vscode-containers'
   vscode 'ms-azuretools.vscode-docker'
-  vscode 'ms-vscode.atom-keybindings'
-  vscode 'ms-vscode.vscode-typescript-next'
+  vscode 'ms-python.debugpy'
+  vscode 'ms-python.python'
+  vscode 'ms-python.vscode-pylance'
+  vscode 'ms-python.vscode-python-envs'
+  vscode 'ms-vscode-remote.remote-containers'
+  vscode 'ms-vscode-remote.remote-ssh'
+  vscode 'ms-vscode-remote.remote-ssh-edit'
+  vscode 'ms-vscode.remote-explorer'
   vscode 'oderwat.indent-rainbow'
-  vscode 'orta.vscode-jest'
   vscode 'redhat.vscode-yaml'
   vscode 'richie5um2.vscode-sort-json'
   vscode 'shopify.ruby-lsp'
@@ -215,6 +244,7 @@ if is_vscode_installed
   vscode 'wayou.vscode-todo-highlight'
   vscode 'wmaurer.change-case'
   vscode 'yzhang.markdown-all-in-one'
+  vscode 'zenclabs.previewjs'
 end
 
 # ----------------------------------------------------------------------------------------------------------
@@ -222,13 +252,6 @@ end
 
 # --- standalone encrypted local backup tool (unrelated to the encrypted-backup mechanism)
 # cask 'Picocrypt/picocrypt/picocrypt', trusted: true if is_arm
-
-# ---- zen-browser development
-brew 'cairo'
-brew 'gnu-tar'
-brew 'mercurial'
-brew 'sccache'
-brew 'watchman'
 
 # ---- docker utilities
 # brew 'dive'   # docker layers inspection on steroids
@@ -260,8 +283,6 @@ brew 'watchman'
 
 # ---- casks
 # cask 'TheBoredTeam/boring-notch/boring-notch', trusted: true, postinstall: "\"#{setup_login_items_script}\" -a 'boringNotch'" if ::OS::Mac::version >= 14
-# cask 'brave-browser'
-# cask 'claude-code'
 # cask 'cloudflare-warp'
 # cask 'codeql'
 # cask 'fliqlo'
@@ -275,7 +296,6 @@ brew 'watchman'
 # cask 'licecap'
 # cask 'lulu'
 # cask 'windows-app'    # replacement for microsoft-remote-desktop
-cask 'microsoft-teams'
 # cask 'monolingual'
 # cask 'netspot'
 # cask 'ngrok'

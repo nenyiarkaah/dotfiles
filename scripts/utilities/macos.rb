@@ -40,18 +40,18 @@ module MacOS
   # Keep in sync with Brewfile setup_login_items_script entries and
   # defaults-write login-key sections in osx-defaults.sh.
   LOGIN_ITEM_APPS = [
-    'Clocker',    # startAtLogin = true (com.abhishek.Clocker)
+    # 'Clocker',    # startAtLogin = true (com.abhishek.Clocker)
     # 'DockDoor',   # login item via Brewfile setup_login_items_script (SMAppService)
-    'KeyCastr',   # login item via Brewfile setup_login_items_script (SMAppService)
+    # 'KeyCastr',   # login item via Brewfile setup_login_items_script (SMAppService)
     'KeyClu',     # launchAtLogin = true (com.0804Team.KeyClu)
     'Keybase',    # login item via Brewfile setup_login_items_script (SMAppService)
-    'Mechvibes',  # login item via Brewfile setup_login_items_script (SMAppService)
-    'ProtonVPN',  # login item via Brewfile setup_login_items_script (SMAppService)
+    # 'Mechvibes',  # login item via Brewfile setup_login_items_script (SMAppService)
+    # 'ProtonVPN',  # login item via Brewfile setup_login_items_script (SMAppService)
     'Shortcat',   # login item via Brewfile setup_login_items_script (SMAppService)
     # 'Sol',        # login item via Brewfile setup_login_items_script (SMAppService)
     # 'Stats',      # LaunchAtLoginNext = true (eu.exelban.Stats)
     'Thaw',       # login item via Brewfile setup_login_items_script (SMAppService)
-    'Vorssaint',  # login item via Brewfile setup_login_items_script (SMAppService)
+    # 'Vorssaint',  # login item via Brewfile setup_login_items_script (SMAppService)
   ].freeze
 
   # ---------------------------------------------------------------------------

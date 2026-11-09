@@ -355,7 +355,7 @@ node_modules/
 /Brewfile.lock.json
 /Desktop/
 # PROJECTS_BASE_DIR — update if you changed this from ~/dev in .shellrc
-/dev/
+/repo/
 /Documents/
 /Downloads/
 /go/pkg/
@@ -387,11 +387,11 @@ node_modules/
 # below if you changed PROJECTS_BASE_DIR from ~/dev in .shellrc.
 # ══════════════════════════════════════════════════════════════════════════════
 
-/dev/**/.DS_Store
-/dev/**/.nvmrc
-/dev/**/.pytest_cache
-/dev/**/.tool-versions
-/dev/**/*.zwc
+/repo/**/.DS_Store
+/repo/**/.nvmrc
+/repo/**/.pytest_cache
+/repo/**/.tool-versions
+/repo/**/*.zwc
 **/Skype/**/media_messaging/
 
 
@@ -432,6 +432,7 @@ node_modules/
 /.config/btop/btop.conf
 /.config/curlrc
 /.config/direnv/direnv.toml
+/.config/direnv/lib/op-service-account.sh
 /.config/ghostty/config
 /.config/git/hooks/*
 /.config/iex/iex.exs

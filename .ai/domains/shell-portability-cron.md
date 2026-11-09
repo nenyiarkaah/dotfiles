@@ -338,6 +338,12 @@ it does not survive direnv's `strict_env` mode. `warn` and `error` always print.
 This means `.envrc` files need no extra log suppression logic -- just use the
 standard logging functions as normal.
 
+An `.envrc` whose `op read` calls should run as the 1Password service account starts them with
+`use op_service_account 'op://<vault>/<item>/<field>'` (defined in
+`files/--XDG_CONFIG_HOME--/direnv/lib/op-service-account.sh`): it reads the token with the signed-in
+1Password app (never the keychain) and exports `OP_SERVICE_ACCOUNT_TOKEN` for that folder only. Never export the
+token from a startup file -- that puts an `op` call on every shell start.
+
 ## Cron Scripts
 
 Scripts invoked from cron start with a minimal environment.

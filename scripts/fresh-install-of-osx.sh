@@ -767,17 +767,14 @@ main() {
   _resolve_dotfiles_branch
   _download_and_source_shellrc
 
-  # Printed as early as possible (right after '.shellrc' is sourced, so 'user_action'
+  # Checked as early as possible (right after '.shellrc' is sourced, so 'user_action'
   # is available and ENCRYPTED_*_REPO_URL env vars are populated) rather than at the
-  # much-later 'Cloning repos' step -- this manual escape hatch is only needed if the
-  # external 'git-remote-gpg-encrypt' tool's interactive Keychain prompt fails or can't
-  # run (e.g. no TTY), and by the time that step is reached (after xcode tools/
-  # homebrew/etc.) it is too late for the user to act on this in parallel with the
-  # rest of the install. Gated on the encrypted-backup env vars actually being set --
-  # no point reminding someone who has disabled this mechanism entirely.
-  if is_non_zero_string "${ENCRYPTED_HOME_REPO_URL:-}" || is_non_zero_string "${ENCRYPTED_PROFILES_REPO_URL:-}"; then
-    user_action "The 'home'/'browser-profiles' repo clone steps later in this script read their encrypted-backup passphrase from the macOS Keychain -- you won't normally be prompted."
-    user_action "If that fails, run this in another terminal now (no need to wait): security add-generic-password -A -a \"\${USER}\" -s 'git-remote-gpg-encrypt' -w"
+  # much-later 'Cloning repos' step, which is too late to fix it without restarting.
+  # The passphrase comes only from GIT_GPG_ENCRYPT_PASSPHRASE (read from 1Password before
+  # the bootstrap) -- never the Keychain. Gated on the encrypted-backup env vars actually
+  # being set -- no point reminding someone who has disabled this mechanism entirely.
+  if { is_non_zero_string "${ENCRYPTED_HOME_REPO_URL:-}" || is_non_zero_string "${ENCRYPTED_PROFILES_REPO_URL:-}"; } && ! is_non_zero_string "${GIT_GPG_ENCRYPT_PASSPHRASE:-}"; then
+    user_action "GIT_GPG_ENCRYPT_PASSPHRASE is not set, so the encrypted 'home'/'browser-profiles' restore will fail. Stop (Ctrl-C), run 'read -s GIT_GPG_ENCRYPT_PASSPHRASE; export GIT_GPG_ENCRYPT_PASSPHRASE;' with the passphrase from 1Password (Private/home-backup), then rerun."
   fi
 
   keep_sudo_alive

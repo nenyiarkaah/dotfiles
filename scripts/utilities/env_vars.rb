@@ -172,8 +172,8 @@ module EnvVars
   PERSONAL_PROFILES_DIR = _fetch_pathname('PERSONAL_PROFILES_DIR') { HOME.join('personal', USER, 'browser-profiles') }.freeze
 
   # Projects base directory (where all git repos live).
-  # Mirrors: export PROJECTS_BASE_DIR="${HOME}/dev"
-  PROJECTS_BASE_DIR = _fetch_pathname('PROJECTS_BASE_DIR') { HOME.join('dev') }.freeze
+  # Mirrors: export PROJECTS_BASE_DIR="${HOME}/repo"
+  PROJECTS_BASE_DIR = _fetch_pathname('PROJECTS_BASE_DIR') { HOME.join('repo') }.freeze
 
   # XDG base directory specification paths.
   # Mirrors: XDG_* exports in .shellrc

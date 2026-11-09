@@ -115,9 +115,10 @@ fi
 # derives it live from 'keybase status', since whoever is logged in owns the account.
 
 # Keybase repo names (comment out to disable Keybase entirely).
-export KEYBASE_HOME_REPO_NAME='home'
+# Disabled: this fork backs up HOME through the encrypted backup below only.
+# export KEYBASE_HOME_REPO_NAME='home'
 # TODO: Change remote repo name to 'browser-profiles'
-export KEYBASE_PROFILES_REPO_NAME='profiles'
+# export KEYBASE_PROFILES_REPO_NAME='profiles'
 # Optional: only a hint for the first-time 'keybase login <username>' (skips the account
 # prompt); has no effect once someone is logged in. Uncomment and set to use it.
 # export KEYBASE_USERNAME='your_username'
@@ -128,8 +129,11 @@ export KEYBASE_PROFILES_REPO_NAME='profiles'
 # mechanism. Takes a full URL (any git host), unlike KEYBASE_*_REPO_NAME above -- that
 # tool has no concept of a "default owner" to derive from a repo name, by design (see
 # its docs/DESIGN.md § Remote naming is entirely outside this tool's purview).
-# export ENCRYPTED_HOME_REPO_URL='https://github.com/vraravam/home.git'
+export ENCRYPTED_HOME_REPO_URL='https://github.com/nenyiarkaah/home.git'
 # export ENCRYPTED_PROFILES_REPO_URL='https://github.com/vraravam/browser-profiles.git'
+# 1Password reference of the encrypted-backup passphrase (a reference, not the secret). Read by
+# 'with_backup_passphrase' in .aliases, which keeps the passphrase out of the Keychain.
+export ENCRYPTED_BACKUP_PASSPHRASE_REF='op://Private/home-backup/password'
 # --------------------------------------------------------------------------------
 
 # ---------- Env vars for basic/common setup (can be optionally changed) ---------
@@ -137,7 +141,7 @@ export KEYBASE_PROFILES_REPO_NAME='profiles'
 export DOTFILES_DIR="${XDG_CONFIG_HOME}/dotfiles"
 
 # All development codebases are cloned into a subfolder of this folder
-export PROJECTS_BASE_DIR="${HOME}/dev"
+export PROJECTS_BASE_DIR="${HOME}/repo"
 
 # Executable scripts that are not shared as part of this public repo are present here
 export PERSONAL_BIN_DIR="${HOME}/personal/dev/bin"

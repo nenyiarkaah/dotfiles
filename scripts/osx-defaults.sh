@@ -665,7 +665,7 @@ main() {
 
   _dw com.apple.menuextra.clock DateFormat -string 'EEE d MMM hh:mm:ss a'
   _dw com.apple.menuextra.clock FlashDateSeparators -bool true
-  _dw com.apple.menuextra.clock IsAnalog -bool true # Since I am using `The Clocker` app, turning this to analog
+  _dw com.apple.menuextra.clock IsAnalog -bool false # digital: the menu bar clock is the only clock (no Clocker app)
   _dw com.apple.menuextra.clock Show24Hour -bool false
   _dw com.apple.menuextra.clock ShowAMPM -bool true
   _dw com.apple.menuextra.clock ShowDate -bool false

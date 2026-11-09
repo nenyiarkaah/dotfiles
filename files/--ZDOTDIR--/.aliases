@@ -251,15 +251,6 @@ if command_exists "${EDITOR:-}"; then
   alias edit-gist='edit "${DOTFILES_DIR}" "${PERSONAL_BIN_DIR}" "${PERSONAL_CONFIGS_DIR}" "${HOME}/.gitignore" "${HOME}/.zsh_nocorrect" "${PERSONAL_PROFILES_DIR}/.gitignore" "${HOME}/.ssh" "${HOME}/.mise.toml" "${XDG_CONFIG_HOME}"'
 fi
 
-# Make VSCodium use the VS Code marketplace
-if (($+commands[codium])); then
-  export VSCODE_GALLERY_SERVICE_URL='https://marketplace.visualstudio.com/_apis/public/gallery'
-  export VSCODE_GALLERY_CACHE_URL='https://vscode.blob.core.windows.net/gallery/index'
-  export VSCODE_GALLERY_ITEM_URL='https://marketplace.visualstudio.com/items'
-  export VSCODE_GALLERY_CONTROL_URL=''
-  export VSCODE_GALLERY_RECOMMENDATIONS_URL=''
-fi
-
 # Use bat to colorize man pages
 if (($+commands[bat])); then
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
@@ -799,6 +790,36 @@ if command_exists keybase; then
     fi
     keybase git gc --force "${1:-}"
   }
+fi
+
+# --------------------------------------------------------------------------
+# 3k2. Encrypted backup helpers
+# --------------------------------------------------------------------------
+
+# Runs one command with the encrypted-backup passphrase read from 1Password, so the passphrase
+# never has to be stored in the Keychain: git-remote-gpg-encrypt reads GIT_GPG_ENCRYPT_PASSPHRASE
+# before it looks in the Keychain, and the variable is set for that one command only.
+# Tradeoff: nothing can push or pull the backup unattended. The hourly cron job never touches
+# HOME itself (its repo filter only matches '.config|zsh|mise' paths), so nothing breaks there.
+# Usage: with_backup_passphrase git -C "${HOME}" pull   (or: backup_home)
+if command_exists op; then
+  with_backup_passphrase() {
+    if [[ $# -eq 0 ]]; then
+      error "$(red 'Usage:') $(cyan "${0}") $(yellow '<command> [args...]')"
+      return 1
+    fi
+    if is_zero_string "${ENCRYPTED_BACKUP_PASSPHRASE_REF:-}"; then
+      error "'$(yellow 'ENCRYPTED_BACKUP_PASSPHRASE_REF')' is not set (see .shellrc)"
+      return 1
+    fi
+    local passphrase
+    if ! passphrase="$(op read "${ENCRYPTED_BACKUP_PASSPHRASE_REF}")"; then
+      error "Could not read the backup passphrase from '$(cyan "${ENCRYPTED_BACKUP_PASSPHRASE_REF}")' -- is 1Password unlocked?"
+      return 1
+    fi
+    GIT_GPG_ENCRYPT_PASSPHRASE="${passphrase}" "$@"
+  }
+  alias backup_home='with_backup_passphrase git -C "${HOME}" push origin master'
 fi
 
 # --------------------------------------------------------------------------

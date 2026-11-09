@@ -75,9 +75,13 @@ ohmyzsh/ohmyzsh path:lib/termsupport.zsh kind:defer
 # Safe to defer; aliases are available before any keypress is processed.
 ohmyzsh/ohmyzsh path:plugins/eza kind:defer
 
-# git plugin removed: provided 431 lines of aliases, but only 'gco' was used.
-# Replaced with 'co = checkout' alias in .gitconfig (see git-config.md).
-# Saves ~2ms deferred load time and eliminates 400+ unused aliases.
+# DEFERRED: git aliases (gp, gst, gco, gcmsg, gpsup, ...). lib/git.zsh provides
+# git_current_branch / git_main_branch, which aliases like gpsup and ggpush call at run
+# time. Tradeoff (maintainability over startup speed): the plugin forks 'git version' on
+# load (~40ms with Apple's /usr/bin/git shim, less with Homebrew git) and lib/git.zsh adds
+# ~9ms. Both are deferred, so the first prompt is unaffected; the cost lands just after it.
+ohmyzsh/ohmyzsh path:lib/git.zsh kind:defer
+ohmyzsh/ohmyzsh path:plugins/git kind:defer
 
 # DEFERRED: Colors man pages (red headers, green underlines, yellow highlights).
 # Zero overhead - just sets LESS_TERMCAP_* env vars for the less pager.

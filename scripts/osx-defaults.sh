@@ -278,11 +278,10 @@ _dw_flush() {
 # Once-per-macOS-version stamps and idempotent machine naming
 # ---------------------------------------------------------------------------
 
-# Heavy, machine-wide actions (rebuilding the LaunchServices database, erasing
-# and disabling Spotlight indexes) only need to happen on first install or after
-# a macOS upgrade. A stamp file records the macOS version they last ran for;
-# OSX_DEFAULTS_FORCE=1 ignores the stamps. Rerunning the script must not
-# re-trigger them, because both are slow and the index erase is disruptive.
+# Heavy, machine-wide actions (rebuilding the LaunchServices database) only need
+# to happen on first install or after a macOS upgrade. A stamp file records the
+# macOS version they last ran for; OSX_DEFAULTS_FORCE=1 ignores the stamps.
+# Rerunning the script must not re-trigger them, because they are slow.
 typeset -g _OSX_VERSION=''
 
 # Succeeds when stamp $1 exists and matches the running macOS version.
@@ -2594,18 +2593,7 @@ user_pref("browser.urlbar.suggest.quicksuggest.sponsored", false);
     killall "${app}" &>/dev/null || true
   done
 
-  # Turn off spotlight indexing for all volumes (to pre-empt any issues with the system settings pane).
-  # Erasing the indexes is disruptive, so it is stamp-guarded to first install / macOS upgrade
-  # (OSX_DEFAULTS_FORCE=1 overrides); a user who re-enables indexing later is not overridden.
-  if ((! _sudo_ok)); then
-    info 'Skipping Spotlight index reset (needs sudo)'
-    ((++_sudo_skipped))
-  elif _osx_stamp_is_current spotlight; then
-    info 'Spotlight indexing already reset for this macOS version; skipping'
-  elif sudo mdutil -Eda &>/dev/null; then
-    sudo mdutil -ai off &>/dev/null || true
-    _osx_stamp_record spotlight
-  fi
+  # Spotlight indexing is left on: Alfred finds applications through the Spotlight index.
 
   user_action "Grant Full Disk Access to 'Terminal' and 'iTerm': System Settings -> Privacy & Security -> Full Disk Access -> add 'Terminal.app' and 'iTerm.app' (cannot be automated -- TCC is SIP-protected)."
   user_action "Manually adjust the Finder sidebar content (which folders appear in Favorites): stored in LSSharedFileList binary files -- not scriptable via defaults."

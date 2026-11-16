@@ -358,7 +358,7 @@ Keybase usernames are not variables you set: `KEYBASE_USERNAME` is only an optio
 | Variable | Default | Effect | Read by |
 |----------|---------|--------|---------|
 | `CAPTURE_PREFS_JOBS` | `6` | Threads used to export or import the per-domain preferences | `capture-prefs.rb` |
-| `OSX_DEFAULTS_FORCE` | unset | Set to `1` to ignore the stamps that skip the slow, once-per-macOS-version actions (LaunchServices rebuild, Spotlight index erase) | `osx-defaults.sh` |
+| `OSX_DEFAULTS_FORCE` | unset | Set to `1` to ignore the stamps that skip the slow, once-per-macOS-version actions (LaunchServices rebuild) | `osx-defaults.sh` |
 | `OSX_DEFAULTS_NO_BATCH` | unset | Set to `1` to turn the batched `_dw` writes into plain `defaults write` calls | `osx-defaults.sh` |
 | `OSX_DEFAULTS_DRY_RUN` | unset | Set to `1` to record the commands instead of running them (for old-vs-new comparisons) | `osx-defaults.sh` |
 | `OSX_DEFAULTS_DRY_RUN_OUT` | unset | File that receives the dry-run report | `osx-defaults.sh` |

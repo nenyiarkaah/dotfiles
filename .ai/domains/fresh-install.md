@@ -498,11 +498,10 @@ The script used to repeat destructive or noisy work on every run. Now:
   embed a timestamp, so a re-run used to rename the machine every time. They are set only when the
   current `scutil --get` values do not already match the expected pattern; an existing timestamp is
   reused and a fresh one is generated only when naming for the first time.
-- **Once per macOS version**: the LaunchServices rebuild (`lsregister -kill -r ...`) and the Spotlight
-  re-index (`mdutil -Eda`, `-ai off`) are guarded by stamps `${XDG_CACHE_HOME}/osx-defaults-lsregister-stamp`
-  and `osx-defaults-spotlight-stamp` holding the macOS version. `OSX_DEFAULTS_FORCE=1` ignores them. The
-  Spotlight stamp is written only if `mdutil -Eda` succeeded. (Stamp file names must contain `stamp`:
-  `delete_caches` keeps such files.)
+- **Once per macOS version**: the LaunchServices rebuild (`lsregister -kill -r ...`) is guarded by the
+  stamp `${XDG_CACHE_HOME}/osx-defaults-lsregister-stamp` holding the macOS version. `OSX_DEFAULTS_FORCE=1`
+  ignores it. (Stamp file names must contain `stamp`: `delete_caches` keeps such files.) Spotlight
+  indexing is no longer touched: Alfred finds applications through the Spotlight index.
 - **Batched scalar writes**: runs of scalar `defaults write` calls (bool, int, string, floats that are
   exact in single precision) go through `_dw` and are flushed per domain with ONE
   `defaults import <domain> -` (a merge: existing keys survive, types match `defaults write`).

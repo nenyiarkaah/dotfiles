@@ -175,9 +175,12 @@ brew 'sonar-scanner'
 brew 'sshpass'
 
 # speech-to-text and OCR
+brew 'openai-whisper'
 brew 'poppler'
 brew 'tesseract'
-brew 'whisper.cpp'
+
+# isolated installs of Python CLI tools (mise's pipx backend uses it, e.g. markitdown in ~/.mise.toml)
+brew 'pipx'
 
 # local AI coding tools
 # tap 'jundot/omlx', 'git@github.com/jundot/omlx'
